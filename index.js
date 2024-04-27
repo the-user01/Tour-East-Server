@@ -28,7 +28,24 @@ async function run() {
         // Connect the client to the server	(optional starting in v4.7)
         // await client.connect();
 
+        const spotCollection = client.db("postDB").collection('posts')
 
+        app.get('/allSpots', async(req, res)=>{
+            const cursor = spotCollection.find()
+
+            const result =  await cursor.toArray()
+            
+            res.send(result);
+
+        })
+
+        app.post('/allSpots', async(req, res)=>{
+            const newSpot = req.body;
+
+            const result = await spotCollection.insertOne(newSpot);
+
+            res.send(result);
+        })
 
 
 
@@ -46,7 +63,7 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-    res.send("Server is running")
+    res.send("Post Server is running")
 })
 
 app.listen(port, () => {
