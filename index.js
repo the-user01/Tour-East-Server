@@ -30,16 +30,14 @@ async function run() {
 
         const spotCollection = client.db("postDB").collection('posts')
 
-        app.get('/allSpots', async(req, res)=>{
+        app.get('/allSpots', async (req, res) => {
             const cursor = spotCollection.find()
 
-            const result =  await cursor.toArray()
-            
+            const result = await cursor.toArray()
+
             res.send(result);
 
         })
-
-        /* Show by id */
 
         app.get('/allSpots/:id', async (req, res) => {
             const id = req.params.id;
@@ -49,7 +47,15 @@ async function run() {
 
         })
 
-        app.post('/allSpots', async(req, res)=>{
+        app.get('/allSpots/email/:email', async (req, res) => {
+                const email = req.params.email;
+                const cursor = { email: email };
+                const options = { upsert: true };
+                const result = await spotCollection.find(cursor, options).toArray();
+                res.send(result);
+        })
+
+        app.post('/allSpots', async (req, res) => {
             const newSpot = req.body;
 
             const result = await spotCollection.insertOne(newSpot);
