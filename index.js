@@ -48,11 +48,11 @@ async function run() {
         })
 
         app.get('/allSpots/email/:email', async (req, res) => {
-                const email = req.params.email;
-                const cursor = { email: email };
-                const options = { upsert: true };
-                const result = await spotCollection.find(cursor, options).toArray();
-                res.send(result);
+            const email = req.params.email;
+            const cursor = { email: email };
+            const options = { upsert: true };
+            const result = await spotCollection.find(cursor, options).toArray();
+            res.send(result);
         })
 
         app.post('/allSpots', async (req, res) => {
@@ -61,6 +61,35 @@ async function run() {
             const result = await spotCollection.insertOne(newSpot);
 
             res.send(result);
+        })
+
+
+        app.put('/allSpots/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updatedSpot = req.body;
+
+            const spot = {
+                $set: {
+                    spot_name: updatedSpot.spot_name,
+                    country_name: updatedSpot.country_name,
+                    location: updatedSpot.location,
+                    average_cost: updatedSpot.average_cost,
+                    seasonality: updatedSpot.seasonality,
+                    travel_time: updatedSpot.travel_time,
+                    description: updatedSpot.description,
+                    total_visitor: updatedSpot.total_visitor,
+                    photo: updatedSpot.photo,
+                    email: updatedSpot.email,
+                    name: updatedSpot.name,
+
+                }
+            }
+
+            const result = await spotCollection.updateOne(filter, spot, options);
+            res.send(result);
+
         })
 
 
@@ -79,7 +108,7 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-    res.send("Post Server is running")
+    res.send("Tourist Spot Server is running")
 })
 
 app.listen(port, () => {
