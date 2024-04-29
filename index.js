@@ -54,6 +54,7 @@ async function run() {
             const result = await spotCollection.find(cursor, options).toArray();
             res.send(result);
         })
+        
 
         app.post('/allSpots', async (req, res) => {
             const newSpot = req.body;
@@ -96,6 +97,30 @@ async function run() {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
             const result = await spotCollection.deleteOne(query);
+            res.send(result);
+        })
+
+
+
+        // Loading data of all countries
+
+        const countryCollection = client.db("postDB").collection('country_name')
+
+        app.get('/allCountries', async (req, res) => {
+            const cursor = countryCollection.find()
+
+            const result = await cursor.toArray()
+
+            res.send(result);
+
+        })
+
+
+        app.get('/allCountries/name/:name', async (req, res) => {
+            const name = req.params.name;
+            const cursor = { country_name : name };
+            const options = { upsert: true };
+            const result = await spotCollection.find(cursor, options).toArray();
             res.send(result);
         })
 
